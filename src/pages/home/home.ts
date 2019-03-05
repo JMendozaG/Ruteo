@@ -9,7 +9,10 @@ import {
   CameraPosition,
   MarkerOptions,
   Marker,
-  LatLng
+  LatLng,
+  Geocoder,
+  
+  
 } from '@ionic-native/google-maps';
 //import { GeocoderProvider } from '../../providers/geocoder/geocoder';
 import { NativeGeocoder, NativeGeocoderReverseResult, NativeGeocoderForwardResult, NativeGeocoderOptions } from '@ionic-native/native-geocoder/ngx';
@@ -39,8 +42,7 @@ export class HomePage {
   }
   ionViewDidLoad(){
     this.loadMap();
-    //this.generarDireccion();
-    this.reverse(this.latitud, this.longitud);
+    
    // this.direccion =  this.reverse();
 
    
@@ -49,6 +51,7 @@ export class HomePage {
   loadMap(){
     
     let mapOptions: GoogleMapOptions = {
+
       camera: {
         target: {
           lat: 43.0741904, // default location
@@ -79,10 +82,11 @@ export class HomePage {
   
     this.map.getMyLocation()
     .then(response => {
-      this.dir= response.latLng;
+      this.dir.latlong= response.latLng;
       this.latitud= response.latLng.lat;
       this.longitud= response.latLng.lng;
-      this.dir.lat= response.latLng.lat;
+      //this.dir.lat= response.latLng.lat;
+      this.direccion= this.dir.latlong;
       this.map.moveCamera({
         target: response.latLng
         //this.latitud = target.latLng.lat;
@@ -101,13 +105,14 @@ export class HomePage {
       position: response.latLng
     });
 
-    this.reverse(this.latitud,this.longitud);
     
-      
+    this.generarDireccion(this.latitud, this.longitud);
      
     })
     .catch(error =>{
-      console.log(error);
+      console.log("error en getPosition");
+      console.log(JSON.stringify(error))
+      this.dir.address = error
     });
   }
 
@@ -124,7 +129,7 @@ export class HomePage {
        })
        .catch((error: any) =>
        {
-          console.log(error);
+          console.log(error.stringify());
           reject(error);
        });
     });
@@ -139,21 +144,63 @@ export class HomePage {
      
   }
 
-  generarDireccion() 
+  generarDireccion(latitud:any,longitud:any) 
   {
 
-    this.reverse(this.latitud, this.longitud)
-         .then((data : NativeGeocoderReverseResult) =>
-         {
-            //this.geocoded      = true;
-            this.direccion       = data;
+    Geocoder.geocode({
+      "position": {
+        lat: this.latitud,
+        lng: this.longitud
+      }
+    }).then((results: any[]) => {
+      if (results.length == 0) {
+        // Not found
+        return null;
+      }
+      let address: any = [
+        results[0].subThoroughfare || "",
+        results[0].thoroughfare || "",
+        results[0].locality || "",
+        results[0].adminArea || "",
+        results[0].postalCode || "",
+        results[0].country || ""].join(", ");
+this.dir.address = address;
+    });
 
-         })
-         .catch((error : any)=>
-         {
-            //this.geocoded      = true;
-            this.direccion       = error.message;
-         });
+    /* this.nativegeocoder.reverseGeocode(latitud, longitud)
+     .then((result : NativeGeocoderReverseResult[]) =>
+     {
+        this.dir.address  = "The reverseGeocode address is"+result[0].thoroughfare+result[0].countryCode;
+     })
+     .catch((error: any) =>
+     {
+        error="entre al erorr"
+        console.log("error generar direccion")
+      this.dir.address=error;
+    
+     });    */   
+     // geocoder.geocode({
+    //       'location': this.map.getMyLocation(direcciones)
+    //     },(results: NativeGeocoderReverseResult[] ,status:any)=>{
+    //       if(status=='OK'){
+    //        if(results[0]){
+    //          this.dir.address= results[0].locality;
+    //        }
+    //       }
+    //     })
+        
+    // this.reverse(this.latitud, this.longitud)
+    //      .then((data : NativeGeocoderReverseResult) =>
+    //      {
+    //         //this.geocoded      = true;
+    //         this.direccion       = data;
+
+    //      })
+    //      .catch((error : any)=>
+    //      {
+    //         //this.geocoded      = true;
+    //         this.direccion       = error.message;
+    //      });
 
   //   let obj =[];
   //   let addres="";
