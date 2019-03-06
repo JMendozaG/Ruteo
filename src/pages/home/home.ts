@@ -72,7 +72,7 @@ export class HomePage {
      // this.reverse();
     })
     .catch(error =>{
-      console.log(error);
+      console.log(error );
     });
 
   }
@@ -95,18 +95,18 @@ export class HomePage {
     //   let options: NativeGeocoderOptions = {
     //     useLocale: true,
     //     maxResults: 5
-        
+    this.generarDireccion(this.latitud, this.longitud);
+
     // };
     //this.reverse();
     this.map.addMarker({  
-      title: "mi posicion",
+      title: "Mi Ubicación",
       icon: 'red',
       animation: 'DROP',
       position: response.latLng
     });
 
     
-    this.generarDireccion(this.latitud, this.longitud);
      
     })
     .catch(error =>{
@@ -116,23 +116,23 @@ export class HomePage {
     });
   }
 
-  reverse(latitud:any, longitud:any) : Promise<any>
-  {
+  // reverse(latitud:any, longitud:any) : Promise<any>
+  // {
    
-    return new Promise((resolve, reject) =>
-    {
-       this.nativegeocoder.reverseGeocode(latitud, longitud)
-       .then((result : NativeGeocoderReverseResult[]) =>
-       {
-          this.direccion   = `The reverseGeocode address is ${result[0].thoroughfare} in ${result[0].countryCode}`;
-          resolve(this.direccion);
-       })
-       .catch((error: any) =>
-       {
-          console.log(error.stringify());
-          reject(error);
-       });
-    });
+  //   return new Promise((resolve, reject) =>
+  //   {
+  //      this.nativegeocoder.reverseGeocode(latitud, longitud)
+  //      .then((result : NativeGeocoderReverseResult[]) =>
+  //      {
+  //         this.direccion   = `The reverseGeocode address is ${result[0].thoroughfare} in ${result[0].countryCode}`;
+  //         resolve(this.direccion);
+  //      })
+  //      .catch((error: any) =>
+  //      {
+  //         console.log(error.stringify());
+  //         reject(error);
+  //      });
+  //   });
     
       // this.geo.(latitud, longitud)
       // .then((result: any) => {
@@ -142,7 +142,7 @@ export class HomePage {
       // })
       // .catch((error: any) => console.log(error));
      
-  }
+  // }
 
   generarDireccion(latitud:any,longitud:any) 
   {
@@ -162,7 +162,7 @@ export class HomePage {
         results[0].thoroughfare || "",
         results[0].locality || "",
         results[0].adminArea || "",
-        results[0].postalCode || "",
+       // results[0]. || "",
         results[0].country || ""].join(", ");
 this.dir.address = address;
     });
