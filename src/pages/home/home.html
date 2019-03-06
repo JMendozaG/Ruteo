@@ -9,9 +9,15 @@
 
 <ion-content padding>
   <div id="map_canvas">
-    <p>
-      Mi posicion es: {{dir.address | json}}
-    </p>
+    
   </div>
  
 </ion-content>
+<ion-footer padding>
+  <ion-toolbar >
+    
+    <h6>Mi Ubicacion es:</h6><p>{{dir.addresss}}</p>
+    <button ion-button color="dark" full>Solicitar Servicio</button>
+    <br>
+  </ion-toolbar>
+</ion-footer>
