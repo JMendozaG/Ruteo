@@ -54,15 +54,15 @@ export class HomePage {
 
       camera: {
         target: {
-          lat: 43.0741904, // default location
-          lng: -89.3809802 // default location
+          lat: 29.082578, // default location
+          lng: -110.955826 // default location
         },
         zoom: 18,
         tilt: 30
       }
     };
 
-    this.map = this.googleMaps.create('map_canvas', mapOptions);
+    this.map = GoogleMaps.create('map_canvas', mapOptions);
 
     // Wait the MAP_READY before using any methods.
     this.map.one(GoogleMapsEvent.MAP_READY)
