@@ -21,9 +21,9 @@
         <img src="assets/imgs/siam.webp" >
       </div>
     <!-- <ion-label floating>Floating Label</ion-label> -->
-    <ion-input placeholder="Usuario" text-center></ion-input>
+    <ion-input placeholder="Usuario" text-center [(ngModel)]="user"></ion-input>
     <br>
-    <ion-input type="password" placeholder="Contraseña" text-center></ion-input>
+    <ion-input type="password" placeholder="Contraseña" text-center [(ngModel)]="password"></ion-input>
     <br>
     <br>
        <button  ion-button full round style="height: 50px" (click)="redirecthome()"> Acceder</button>

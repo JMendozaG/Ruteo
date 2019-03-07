@@ -6,6 +6,7 @@ import { MyApp } from './app.component';
 import { HomePage } from '../pages/home/home';
 import { ListPage } from '../pages/list/list';
 import {LoginPage} from '../pages/login/login';
+import{ConductorPage}from '../pages/conductor/conductor';
 import { StatusBar } from '@ionic-native/status-bar';
 import { SplashScreen } from '@ionic-native/splash-screen';
 import { GoogleMaps } from '@ionic-native/google-maps';
@@ -18,7 +19,8 @@ import { GeocoderProvider } from '../providers/geocoder/geocoder';
     MyApp,
     HomePage,
     ListPage,
-    LoginPage
+    LoginPage,
+    ConductorPage
   ],
   imports: [
     BrowserModule,
@@ -29,7 +31,8 @@ import { GeocoderProvider } from '../providers/geocoder/geocoder';
     MyApp,
     HomePage,
     ListPage,
-    LoginPage
+    LoginPage,
+    ConductorPage
   ],
   providers: [
     StatusBar,
