@@ -3,5 +3,8 @@ page-home {
         display: block;
         height: 100%;
         width: 100%;
+        &.show-map{
+          opacity: 1;
+        }
       }
 }

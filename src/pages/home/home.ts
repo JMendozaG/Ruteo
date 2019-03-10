@@ -11,29 +11,42 @@ import {
   Marker,
   LatLng,
   Geocoder,
+  ILatLng,
+  PolylineOptions,
+  Polyline,
+ 
   
   
 } from '@ionic-native/google-maps';
+import { Geolocation, Geoposition } from '@ionic-native/geolocation/ngx';
 //import { GeocoderProvider } from '../../providers/geocoder/geocoder';
 import { NativeGeocoder, NativeGeocoderReverseResult, NativeGeocoderForwardResult, NativeGeocoderOptions } from '@ionic-native/native-geocoder/ngx';
 //import { NativeGeocoder } from '@ionic-native/native-geocoder/ngx';
-
+declare var google;
 @Component({
   selector: 'page-home',
   templateUrl: 'home.html'
 })
 export class HomePage {
-  map: GoogleMap;
+  map: any;
   longitud: any;
   latitud: any;
   direccion: any; 
   dir:direc;
+  previousPosition: Geoposition;
+   
+
+  directionsService: any = null;
+  directionsDisplay: any = null;
+  bounds: any = null;
+  myLatLng: any;
+  waypoints: any[];
 //   options: NativeGeocoderOptions = {
 //     useLocale: true,
 //     maxResults: 5
     
 // };
-  constructor(public navCtrl: NavController, private googleMaps: GoogleMaps, public nativegeocoder: NativeGeocoder) {
+  constructor(public navCtrl: NavController, private googleMaps: GoogleMaps, public nativegeocoder: NativeGeocoder, public geolocation: Geolocation) {
        this.dir={
          lat:0,
          lon:0,
@@ -42,10 +55,59 @@ export class HomePage {
   }
   ionViewDidLoad(){
     this.loadMap();
-    
+    //this.posiciones(); 
+
    // this.direccion =  this.reverse();
 
    
+  }
+
+  posiciones(latitudI: any, longitudI: any, latitudF: any, longitudF: any)
+  {
+    // this.directionsService = new google.maps.DirectionsService();
+    // this.directionsDisplay = new google.maps.DirectionsRenderer();
+    // this.bounds = new google.maps.LatLngBounds();
+    // this.waypoints = [
+    //   {
+    //     location: { lat: latitudI, lng: longitudI },
+    //     stopover: true,
+    //   },
+    //   {
+    //     location: { lat: latitudF, lng: longitudF },
+    //     stopover: true,
+    //   },
+      
+    // ];
+    
+
+  }
+  
+  private calculateRoute(){
+    
+    //this.bounds.extend(this.myLatLng);
+    // this.waypoints.forEach(waypoint => {
+    //   var point = new google.maps.LatLng(waypoint.location.lat, waypoint.location.lng);
+    //   this.bounds.extend(point);
+    // });
+
+   // this.map.fitBounds(this.bounds);
+
+    this.directionsService.route({
+      origin: new google.maps.LatLng(this.myLatLng.lat, this.myLatLng.lng),
+      destination: new google.maps.LatLng( 29.0883913, -110.9894091),
+      //waypoints: this.waypoints,
+     // optimizeWaypoints: true,
+      travelMode: google.maps.TravelMode.DRIVING,
+      avoidTolls: true
+    }, (response, status)=> {
+      if(status === google.maps.DirectionsStatus.OK) {
+        console.log(response);
+        this.directionsDisplay.setDirections(response);
+      }else{
+        alert('Could not display directions due to: ' + status);
+      }
+    });  
+
   }
 
   loadMap(){
@@ -62,6 +124,7 @@ export class HomePage {
       }
     };
 
+    
     this.map = GoogleMaps.create('map_canvas', mapOptions);
 
     // Wait the MAP_READY before using any methods.
@@ -70,11 +133,18 @@ export class HomePage {
       // Now you can use all methods safely.
       this.getPosition();
      // this.reverse();
+     this.directionsDisplay.setMap(this.map);
+    //this.directionsDisplay.setPanel(panelEle);
+    let mapEle: HTMLElement = document.getElementById('map_canvas');
+    google.maps.event.addListenerOnce(this.map, 'idle', () => {
+      mapEle.classList.add('show-map');
+      this.calculateRoute();
+    });
     })
     .catch(error =>{
       console.log(error );
     });
-
+    
   }
 
   getPosition(): void{
@@ -87,6 +157,7 @@ export class HomePage {
       this.longitud= response.latLng.lng;
       //this.dir.lat= response.latLng.lat;
       this.direccion= this.dir.latlong;
+      this.myLatLng = response.latLng; 
       this.map.moveCamera({
         target: response.latLng
         //this.latitud = target.latLng.lat;
@@ -96,7 +167,8 @@ export class HomePage {
     //     useLocale: true,
     //     maxResults: 5
     this.generarDireccion(this.latitud, this.longitud);
-
+   // this.posiciones(this.latitud, this.longitud, 29.0883913, -110.9894091);
+    //this.calculateRoute();
     // };
     //this.reverse();
     this.map.addMarker({  
@@ -105,8 +177,16 @@ export class HomePage {
       animation: 'DROP',
       position: response.latLng
     });
+  
+    this.map.addMarker({  
+      title: "Siam",
+      icon: 'blue',
+      animation: 'DROP',
+      position: {lat: 29.0883913, lng: -110.9894091 },//esponse.latLng
+    });
 
-    
+    this.calculateRoute();
+    //this.DibujarRuta(this.latitud, this.longitud)
      
     })
     .catch(error =>{
@@ -215,4 +295,43 @@ this.dir.address = address;
   //   return addres.slice(0,-2)
   // }
 
-}}
+}
+// drawRoute(pos:Geoposition):void{
+//   if(this.previousPosition==null){
+//     this.previousPosition = pos;
+//   }
+//   this.map.addPolyline(
+//     {
+//       points: [new LatLng(this.previousPosition.coords.latitude, this.previousPosition.coords.longitude), new LatLng(pos.coords.latitude, pos.coords.longitude)],
+//       visible: true,
+//       color:'#FF0000',
+//       width:4
+//     }).then(
+//     (res)=>{
+//       this.previousPosition = pos;
+//     }
+//   ).catch(
+//     (err)=>{
+//       console.log("err: "+JSON.stringify(err));
+//     }
+//   );
+// }
+
+DibujarRuta(latitudR: any, longitudR: any)
+{
+  let inicio: ILatLng ={  lat: latitudR, lng:longitudR  };
+  let final: ILatLng = {lat: 29.0883913, lng: -110.9894091};
+  let Rutas: ILatLng[] = [inicio,final];
+  let options:PolylineOptions = 
+  {
+    points: Rutas,
+    color: 'black',
+    width: 5,
+    geodesic: true,
+    clickable: true
+  };
+  this.map.addPolyline(options).then((polyline: Polyline) => {
+    
+  });
+}
+}

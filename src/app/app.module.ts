@@ -13,6 +13,8 @@ import { GoogleMaps } from '@ionic-native/google-maps';
 //import { NativeGeocoderOriginal } from '@ionic-native/native-geocoder';
 import { NativeGeocoder } from '@ionic-native/native-geocoder/ngx';
 import { GeocoderProvider } from '../providers/geocoder/geocoder';
+//import { Geoposition, Geolocation} from "@ionic-native/geolocation";
+import {  Geolocation } from '@ionic-native/geolocation/ngx';
 //import { NativeGeocoder, NativeGeocoderOriginal} from '@ionic-native/native-geocoder'
 @NgModule({
   declarations: [
@@ -37,10 +39,14 @@ import { GeocoderProvider } from '../providers/geocoder/geocoder';
   providers: [
     StatusBar,
     SplashScreen,
+    
     GoogleMaps,
     NativeGeocoder,
+    Geolocation,
     {provide: ErrorHandler, useClass: IonicErrorHandler},
-    GeocoderProvider
+    GeocoderProvider,
+    
+    
   ]
 })
 export class AppModule {}
