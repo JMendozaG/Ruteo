@@ -41,6 +41,8 @@ export class HomePage {
   bounds: any = null;
   myLatLng: any;
   waypoints: any[];
+  markerlatlong: any;
+  http: any;
 //   options: NativeGeocoderOptions = {
 //     useLocale: true,
 //     maxResults: 5
@@ -175,7 +177,22 @@ export class HomePage {
       title: "Mi Ubicación",
       icon: 'red',
       animation: 'DROP',
+      draggable:true,
       position: response.latLng
+      
+    }).then(marker => {
+      marker.on(GoogleMapsEvent.MARKER_DRAG_END)
+      .subscribe(() => {
+        this.markerlatlong = marker.getPosition();
+
+                      // localStorage.setItem("latt1",this.markerlatlong.lat);
+                      // localStorage.setItem("long1",this.markerlatlong.lng);
+                      //  this.generarDireccion(this.markerlatlong.lat,this.markerlatlong.lng)
+                      // this.http.get('API URL').map(res => res.json()).subscribe(data => {
+                      //   console.log(data);
+                      // });
+                       
+                    });
     });
   
     this.map.addMarker({  
@@ -186,7 +203,7 @@ export class HomePage {
     });
 
     this.calculateRoute();
-    //this.DibujarRuta(this.latitud, this.longitud)
+    this.DibujarRuta(this.latitud, this.longitud)
      
     })
     .catch(error =>{
@@ -242,7 +259,7 @@ export class HomePage {
         results[0].thoroughfare || "",
         results[0].locality || "",
         results[0].adminArea || "",
-       // results[0]. || "",
+       //results[0].sublocality || "",
         results[0].country || ""].join(", ");
 this.dir.address = address;
     });
